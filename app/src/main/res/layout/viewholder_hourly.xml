@@ -26,7 +26,6 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
-            android:src="@tools:sample/avatars"
             tools:srcCompat="@drawable/cloudy_3" />
 
         <TextView
