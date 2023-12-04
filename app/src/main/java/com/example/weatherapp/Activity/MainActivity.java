@@ -1,4 +1,4 @@
-package com.example.weatherapp;
+package com.example.weatherapp.Activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -17,12 +19,19 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.weatherapp.Domains.Hourly;
+import com.example.weatherapp.R;
 import com.example.weatherapp.fragments.AddLocationFragment;
 import com.example.weatherapp.fragments.HomeFragment;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.*;
 import com.google.android.material.navigation.NavigationView;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
@@ -31,7 +40,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SettingsClient settingsClient;
     private LocationRequest locationRequest;
     private LocationSettingsRequest locationSettingsRequest;
+
     private Location lastLocation;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +78,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         checkLocationPermissions();
 
         getLocation();
+
+
     }
+
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
