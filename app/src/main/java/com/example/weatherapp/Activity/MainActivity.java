@@ -1,14 +1,9 @@
 package com.example.weatherapp.Activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -19,32 +14,21 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.weatherapp.Domains.Hourly;
 import com.example.weatherapp.R;
 import com.example.weatherapp.fragments.AddLocationFragment;
 import com.example.weatherapp.fragments.HomeFragment;
 import com.example.weatherapp.models.State;
 import com.example.weatherapp.utils.JsonReader;
 import com.example.weatherapp.utils.LocationUtils;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.location.*;
 import com.google.android.material.navigation.NavigationView;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private LocationCallback locationCallback;
-    private SettingsClient settingsClient;
-    private LocationRequest locationRequest;
-    private LocationSettingsRequest locationSettingsRequest;
-
-    private Location lastLocation;
 
     public ArrayList<State> states;
 
@@ -80,8 +64,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         checkLocationPermissions();
 
-        getLocation();
-
         // Tạo thư mục để chứa các địa điểm yêu thích
         LocationUtils.createDir();
 
@@ -116,62 +98,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    getLocation();
+
                 }
             }
         }
     }
 
-    private void getLocation() {
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        settingsClient = LocationServices.getSettingsClient(this);
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull @NotNull LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                receiveLocation(locationResult);
-            }
-        };
-        locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
-                .setWaitForAccurateLocation(false)
-                .setMinUpdateIntervalMillis(500)
-                .setMaxUpdateDelayMillis(100)
-                .build();
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(locationRequest);
-        locationSettingsRequest = builder.build();
-        startLocationUpdates();
-    }
-
-    @SuppressLint("MissingPermission")
-    private void startLocationUpdates() {
-        settingsClient.checkLocationSettings(locationSettingsRequest).addOnSuccessListener(locationSettingsResponse -> {
-            Log.d("fused provider", "Location settings okay");
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-        }).addOnFailureListener(e -> {
-            int statusCode = ((ApiException) e).getStatusCode();
-            Log.d("fused provider", "inside error ->" + statusCode);
-        });
-
-    }
-
-    private void stopLocationUpdates() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback).addOnCompleteListener(task -> {
-            Log.d("fused provider", "stop location updates");
-        });
-    }
-
-    private void receiveLocation(LocationResult locationResult) {
-        lastLocation = locationResult.getLastLocation();
-
-        Log.d("fused provider", "latitude: " + lastLocation.getLatitude());
-        Log.d("fused provider", "longitude: " + lastLocation.getLongitude());
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopLocationUpdates();
     }
 }
