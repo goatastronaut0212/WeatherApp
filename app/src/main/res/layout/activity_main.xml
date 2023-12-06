@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout
-        android:background="@color/back_1"
+        android:background="@color/dark_blue_700"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -32,7 +32,7 @@
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
-            android:background="@color/back_2"
+            android:background="@color/dark_blue_300"
             app:itemTextColor="@color/white"
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
