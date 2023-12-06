@@ -26,6 +26,9 @@ import com.example.weatherapp.Domains.Hourly;
 import com.example.weatherapp.R;
 import com.example.weatherapp.fragments.AddLocationFragment;
 import com.example.weatherapp.fragments.HomeFragment;
+import com.example.weatherapp.models.State;
+import com.example.weatherapp.utils.JsonReader;
+import com.example.weatherapp.utils.LocationUtils;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.*;
 import com.google.android.material.navigation.NavigationView;
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Location lastLocation;
 
-
+    public ArrayList<State> states;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +82,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         getLocation();
 
+        // Tạo thư mục để chứa các địa điểm yêu thích
+        LocationUtils.createDir();
 
+        // Đọc dữ liệu states
+        states = JsonReader.readJson(this, R.raw.states, State.class);
     }
-
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
