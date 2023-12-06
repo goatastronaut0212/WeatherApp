@@ -18,12 +18,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.weatherapp.R;
 import com.example.weatherapp.fragments.AddLocationFragment;
 import com.example.weatherapp.fragments.HomeFragment;
+import com.example.weatherapp.models.State;
+import com.example.weatherapp.utils.JsonReader;
+import com.example.weatherapp.utils.LocationUtils;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
+
+    public ArrayList<State> states;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +63,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         checkLocationPermissions();
-    }
 
+        // Tạo thư mục để chứa các địa điểm yêu thích
+        LocationUtils.createDir();
+
+        // Đọc dữ liệu states
+        states = JsonReader.readJson(this, R.raw.states, State.class);
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
