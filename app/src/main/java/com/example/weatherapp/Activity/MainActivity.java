@@ -76,8 +76,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.nav_home)
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-        else if ((id == R.id.nav_add_location))
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddLocationFragment()).commit();
+        else if ((id == R.id.nav_add_location)) {
+            AddLocationFragment fragment = new AddLocationFragment();
+            fragment.setStates(states);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
