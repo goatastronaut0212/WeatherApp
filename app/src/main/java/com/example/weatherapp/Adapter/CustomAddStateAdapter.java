@@ -1,5 +1,6 @@
 package com.example.weatherapp.Adapter;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,15 @@ import com.example.weatherapp.models.State;
 import com.example.weatherapp.utils.LocationUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomAddStateAdapter extends RecyclerView.Adapter<CustomAddStateAdapter.ViewHolder> {
     private final List<State> states;
+    Context context;
 
-    public CustomAddStateAdapter(List<State> states) {
+    public CustomAddStateAdapter(Context context, List<State> states) {
+        this.context = context;
         this.states = states;
     }
 
@@ -36,7 +40,9 @@ public class CustomAddStateAdapter extends RecyclerView.Adapter<CustomAddStateAd
         String location = String.format("%s, %s", state.getName(), state.getCountry_name());
         holder.stateNameTextView.setText(location);
         holder.addLocationButton.setOnClickListener(l -> {
-
+            ArrayList<State> previous = LocationUtils.loadFavourite(context);
+            previous.add(state);
+            LocationUtils.saveFavourite(context, previous);
         });
     }
 
