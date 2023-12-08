@@ -16,10 +16,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.weatherapp.R;
-import com.example.weatherapp.fragments.AddLocationFragment;
+import com.example.weatherapp.fragments.ManageLocationFragment;
 import com.example.weatherapp.fragments.HomeFragment;
 import com.example.weatherapp.models.State;
-import com.example.weatherapp.utils.JsonReader;
+import com.example.weatherapp.utils.CustomJsonReader;
 import com.example.weatherapp.utils.LocationUtils;
 import com.google.android.material.navigation.NavigationView;
 
@@ -66,9 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Tạo thư mục để chứa các địa điểm yêu thích
         LocationUtils.createDir();
-
-        // Đọc dữ liệu states
-        states = JsonReader.readJson(this, R.raw.states, State.class);
     }
 
     @Override
@@ -77,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_home)
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
         else if ((id == R.id.nav_add_location)) {
-            AddLocationFragment fragment = new AddLocationFragment();
+            ManageLocationFragment fragment = new ManageLocationFragment();
             fragment.setStates(states);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         }

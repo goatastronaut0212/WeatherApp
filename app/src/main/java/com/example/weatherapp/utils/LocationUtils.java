@@ -16,6 +16,7 @@ public class LocationUtils {
     static String appName = "WeatherApp";
     static String farvoriteName = "favorite.json";
     static File directory = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+
     public static void createDir() {
 
         // Tạo thư mục nếu chưa tồn tại
@@ -24,12 +25,12 @@ public class LocationUtils {
         }
     }
 
-    public static void createFavorite(String location, String latitude, String longtitude) {
+    public static void createFavorite(String location, Float latitude, Float longitude) {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("location", location);
             jsonObject.put("latitude", latitude);
-            jsonObject.put("longtitude", longtitude);
+            jsonObject.put("longitude", longitude);
 
             // Ghi dữ liệu vào file JSON
             FileWriter fileWriter = new FileWriter(directory.getPath() + farvoriteName);
@@ -41,7 +42,7 @@ public class LocationUtils {
         }
     }
 
-    public static void deleteFavorite(String location, String latitude, String longtitude) {
+    public static void deleteFavorite(String location) {
         try {
             // Đọc dữ liệu từ tệp JSON hiện tại
             File file = new File(directory.getPath() + farvoriteName);
