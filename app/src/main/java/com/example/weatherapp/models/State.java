@@ -43,11 +43,6 @@ public class State {
     }
 
     public String toString() {
-        return "State{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                '}';
+        return String.format("%s, %s", name, country_name);
     }
 }

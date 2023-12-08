@@ -1,6 +1,7 @@
 package com.example.weatherapp.utils;
 
 import android.content.Context;
+import android.util.JsonReader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -9,7 +10,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class JsonReader {
+public class CustomJsonReader {
     public static <T> ArrayList<T> readJson(Context context, int rawResourceId, Class<T> type) {
         try {
             // Mở tệp JSON từ thư mục raw
@@ -18,8 +19,7 @@ public class JsonReader {
 
             // Sử dụng Gson để chuyển đổi JSON thành danh sách các đối tượng T
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<T>>() {
-            }.getType();
+            Type listType = TypeToken.getParameterized(ArrayList.class, type).getType();
             ArrayList<T> result = gson.fromJson(reader, listType);
 
             // Đóng luồng đọc
@@ -28,7 +28,7 @@ public class JsonReader {
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
 }
