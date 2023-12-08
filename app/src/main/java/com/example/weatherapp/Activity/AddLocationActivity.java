@@ -45,7 +45,7 @@ public class AddLocationActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 List<State> filteredStates = states.stream().filter(state -> state.getName().contains(query)).collect(Collectors.toList());
-                CustomAddStateAdapter adapter = new CustomAddStateAdapter(filteredStates);
+                CustomAddStateAdapter adapter = new CustomAddStateAdapter(getApplicationContext(), filteredStates);
                 recyclerView.setAdapter(adapter);
                 return false;
             }

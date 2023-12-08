@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -61,11 +62,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
+        states = LocationUtils.loadFavourite(this);
 
         checkLocationPermissions();
-
-        // Tạo thư mục để chứa các địa điểm yêu thích
-        LocationUtils.createDir();
     }
 
     @Override
@@ -98,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+                    Toast.makeText(this, "No location!", Toast.LENGTH_SHORT).show();
                 }
             }
         }

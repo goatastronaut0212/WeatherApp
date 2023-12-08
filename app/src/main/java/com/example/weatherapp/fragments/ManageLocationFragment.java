@@ -18,6 +18,7 @@ import com.example.weatherapp.Activity.AddLocationActivity;
 import com.example.weatherapp.R;
 import com.example.weatherapp.models.State;
 
+import com.example.weatherapp.utils.LocationUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,10 +59,19 @@ public class ManageLocationFragment extends Fragment {
         addLocationFab.setOnClickListener(l -> {
             startActivity(new Intent(getContext(), AddLocationActivity.class));
         });
-
+        ArrayAdapter<State> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, states);
+        listView.setAdapter(adapter);
     }
 
     public void setStates(ArrayList<State> states) {
         this.states = states;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        states = LocationUtils.loadFavourite(getContext());
+        ArrayAdapter<State> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, states);
+        listView.setAdapter(adapter);
     }
 }

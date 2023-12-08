@@ -1,80 +1,39 @@
 package com.example.weatherapp.utils;
 
-import android.os.Environment;
+import android.content.Context;
+import android.content.SharedPreferences;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.weatherapp.models.State;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class LocationUtils {
-    static String appName = "WeatherApp";
-    static String farvoriteName = "favorite.json";
-    static File directory = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+    private static final String PREF_NAME = "location preferences";
+    private static final String FAVOURITE_LOCATION = "favourite location";
+    private static final Gson gson = new Gson();
 
-    public static void createDir() {
-
-        // Tạo thư mục nếu chưa tồn tại
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+    public static void saveFavourite(Context context, ArrayList<State> states) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String favouriteJson = gson.toJson(states);
+        editor.putString(FAVOURITE_LOCATION, favouriteJson);
+        editor.apply();
     }
 
-    public static void createFavorite(String location, Float latitude, Float longitude) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("location", location);
-            jsonObject.put("latitude", latitude);
-            jsonObject.put("longitude", longitude);
+    public static ArrayList<State> loadFavourite(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        String favouriteJson = sharedPreferences.getString(FAVOURITE_LOCATION, null);
+        Type type = new TypeToken<ArrayList<State>>() {
+        }.getType();
 
-            // Ghi dữ liệu vào file JSON
-            FileWriter fileWriter = new FileWriter(directory.getPath() + farvoriteName);
-            fileWriter.write(jsonObject.toString());
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
-    }
+        if (favouriteJson == null)
+            return new ArrayList<>();
 
-    public static void deleteFavorite(String location) {
-        try {
-            // Đọc dữ liệu từ tệp JSON hiện tại
-            File file = new File(directory.getPath() + farvoriteName);
-            JSONObject jsonObject;
-
-            if (file.exists()) {
-                FileInputStream fis = new FileInputStream(file);
-                BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-
-                while ((line = br.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-
-                br.close();
-                fis.close();
-
-                // Chuyển đổi nội dung JSON thành đối tượng JSONObject
-                jsonObject = new JSONObject(stringBuilder.toString());
-
-                // Xóa dữ liệu dựa trên điều kiện (ví dụ: "location")
-                jsonObject.remove(location);
-
-                // Lưu lại dữ liệu đã xóa vào tệp JSON
-                FileWriter fileWriter = new FileWriter(directory.getPath() + farvoriteName);
-                fileWriter.write(jsonObject.toString());
-                fileWriter.flush();
-                fileWriter.close();
-            }
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
+        return gson.fromJson(favouriteJson, type);
     }
 }
