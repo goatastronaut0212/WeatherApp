@@ -26,6 +26,7 @@ import com.example.weatherapp.R;
 import com.example.weatherapp.models.CurrentWeather;
 import com.example.weatherapp.utils.GsonRequest;
 import com.example.weatherapp.utils.RandomAPIKey;
+import com.example.weatherapp.utils.WeatherUtils;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.*;
 import org.jetbrains.annotations.NotNull;
@@ -38,8 +39,6 @@ public class HomeFragment extends Fragment {
     LinearLayout rainLayout;
     RecyclerView recyclerView;
     RecyclerView.Adapter adapterHourly;
-    private static final String CURRENT_WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather";
-    private static final String FORECAST_WEATHER_URL = "https://api.openweathermap.org/data/2.5/forecast";
     private static final int MIN_DISTANCE_THRESHOLD = 500;
     private static final long MIN_TIME_THRESHOLD = 20 * 60 * 1000; // 20 phút
 
@@ -191,7 +190,7 @@ public class HomeFragment extends Fragment {
     private void receiveLocation(LocationResult locationResult) {
         if (canChangeLocation(locationResult.getLastLocation())) {
             lastLocation = locationResult.getLastLocation();
-            String url = buildWeatherURL(CURRENT_WEATHER_URL, lastLocation.getLatitude(), lastLocation.getLongitude());
+            String url = WeatherUtils.getCurrentWeatherURL(lastLocation.getLatitude(), lastLocation.getLongitude());
             GsonRequest<CurrentWeather> currentWeatherGsonRequest = new GsonRequest<>(url, CurrentWeather.class, null, response -> {
                 currentWeather = response;
                 setWeather();
@@ -200,16 +199,6 @@ public class HomeFragment extends Fragment {
             });
             queue.add(currentWeatherGsonRequest);
         }
-    }
-
-    private String buildWeatherURL(String url, double latitude, double longitude) {
-        Uri weatherURI = Uri.parse(url).buildUpon()
-                .appendQueryParameter("lat", String.valueOf(latitude))
-                .appendQueryParameter("lon", String.valueOf(longitude))
-                .appendQueryParameter("appid", RandomAPIKey.getRandomKey())
-                .appendQueryParameter("units", "metric")
-                .build();
-        return weatherURI.toString();
     }
 
     public static Drawable getImage(Context c, String ImageName) {
