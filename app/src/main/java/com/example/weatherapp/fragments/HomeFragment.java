@@ -25,6 +25,7 @@ import com.example.weatherapp.Domains.Hourly;
 import com.example.weatherapp.R;
 import com.example.weatherapp.models.CurrentWeather;
 import com.example.weatherapp.utils.GsonRequest;
+import com.example.weatherapp.utils.RandomAPIKey;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.*;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,6 @@ public class HomeFragment extends Fragment {
     RecyclerView.Adapter adapterHourly;
     private static final String CURRENT_WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather";
     private static final String FORECAST_WEATHER_URL = "https://api.openweathermap.org/data/2.5/forecast";
-    private static final String API_KEY = "1b7ce001fbf4143a1618c866d8204c56";
     private static final int MIN_DISTANCE_THRESHOLD = 500;
     private static final long MIN_TIME_THRESHOLD = 20 * 60 * 1000; // 20 phút
 
@@ -206,7 +206,7 @@ public class HomeFragment extends Fragment {
         Uri weatherURI = Uri.parse(url).buildUpon()
                 .appendQueryParameter("lat", String.valueOf(latitude))
                 .appendQueryParameter("lon", String.valueOf(longitude))
-                .appendQueryParameter("appid", API_KEY)
+                .appendQueryParameter("appid", RandomAPIKey.getRandomKey())
                 .appendQueryParameter("units", "metric")
                 .build();
         return weatherURI.toString();
