@@ -44,8 +44,6 @@ public class ChooseLocationFragment extends Fragment {
     private static final String ARG_LOCATION = "location";
     private static final String ARG_LATITUDE = "latitude";
     private static final String ARG_LONGTITUDE = "longtitude";
-    private static final int MIN_DISTANCE_THRESHOLD = 500;
-    private static final long MIN_TIME_THRESHOLD = 20 * 60 * 1000; // 20 phút
 
     // Giá trị từ Location qua
     private String location;
@@ -60,12 +58,6 @@ public class ChooseLocationFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private RecyclerView.Adapter adapterHourly;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private LocationCallback locationCallback;
-    private SettingsClient settingsClient;
-    private LocationRequest locationRequest;
-    private LocationSettingsRequest locationSettingsRequest;
-    private Location lastLocation;
     private CurrentWeather currentWeather;
     private RequestQueue queue;
 
