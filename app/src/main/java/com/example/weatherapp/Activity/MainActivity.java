@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -17,10 +16,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.weatherapp.R;
-import com.example.weatherapp.fragments.ManageLocationFragment;
 import com.example.weatherapp.fragments.HomeFragment;
+import com.example.weatherapp.fragments.ManageLocationFragment;
 import com.example.weatherapp.models.State;
-import com.example.weatherapp.utils.CustomJsonReader;
 import com.example.weatherapp.utils.LocationUtils;
 import com.google.android.material.navigation.NavigationView;
 

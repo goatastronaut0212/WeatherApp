@@ -2,11 +2,14 @@ package com.example.weatherapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +57,31 @@ public class ManageLocationFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Lấy ra đối tượng State được chọn
+                State selectedState = states.get(position);
+
+                // Tạo một Bundle để truyền dữ liệu từ ManageLocationFragment đến ChooseLocationFragment
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("location", selectedState.toString());
+                bundle.putSerializable("latitude", "" + selectedState.getLatitude());
+                bundle.putSerializable("longtitude", "" + selectedState.getLongtitude());
+
+
+                // Tạo một instance của ChooseLocationFragment
+                ChooseLocationFragment chooseLocationFragment = new ChooseLocationFragment();
+                chooseLocationFragment.setArguments(bundle);
+
+                // Thêm ChooseLocationFragment vào fragment stack
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, chooseLocationFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
         addLocationFab.setOnClickListener(l -> {

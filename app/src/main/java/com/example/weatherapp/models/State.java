@@ -12,14 +12,14 @@ public class State {
     @SerializedName("latitude")
     private float latitude;
     @SerializedName("longitude")
-    private float longitude;
+    private float longtitude;
 
-    public State(int id, String name, String country_name, float latitude, float longitude) {
+    public State(int id, String name, String country_name, float latitude, float longtitude) {
         this.id = id;
         this.name = name;
         this.country_name = country_name;
         this.latitude = latitude;
-        this.longitude = longitude;
+        this.longtitude = longtitude;
     }
 
     public int getId() {
@@ -38,8 +38,8 @@ public class State {
         return latitude;
     }
 
-    public float getLongitude() {
-        return longitude;
+    public float getLongtitude() {
+        return longtitude;
     }
 
     public String toString() {
