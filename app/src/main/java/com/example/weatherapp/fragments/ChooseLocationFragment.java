@@ -23,24 +23,15 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.example.weatherapp.Adapter.WeatherAdapter;
-import com.example.weatherapp.Domains.Hourly;
 import com.example.weatherapp.R;
 import com.example.weatherapp.models.CurrentWeather;
 import com.example.weatherapp.models.WeatherList;
 import com.example.weatherapp.utils.GsonRequest;
-import com.example.weatherapp.utils.RandomAPIKey;
 import com.example.weatherapp.utils.StringToNumberUtils;
 import com.example.weatherapp.utils.WeatherUtils;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.SettingsClient;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ChooseLocationFragment extends Fragment {
