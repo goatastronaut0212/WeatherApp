@@ -21,24 +21,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.example.weatherapp.Domains.Hourly;
+import com.example.weatherapp.Adapter.WeatherAdapter;
 import com.example.weatherapp.R;
 import com.example.weatherapp.models.CurrentWeather;
+import com.example.weatherapp.models.WeatherList;
 import com.example.weatherapp.utils.GsonRequest;
-import com.example.weatherapp.utils.RandomAPIKey;
 import com.example.weatherapp.utils.WeatherUtils;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class HomeFragment extends Fragment {
     TextView temperatureTV, highLowTV, humidTV, rainTV, windTV, weatherDescTV;
     ImageView weatherIconIV;
     LinearLayout rainLayout;
     RecyclerView recyclerView;
-    RecyclerView.Adapter adapterHourly;
+    CurrentWeather[] weatherList;
+    WeatherAdapter weatherAdapter;
     private static final int MIN_DISTANCE_THRESHOLD = 500;
     private static final long MIN_TIME_THRESHOLD = 20 * 60 * 1000; // 20 phút
 
@@ -65,7 +67,6 @@ public class HomeFragment extends Fragment {
         addControls(view);
         queue = Volley.newRequestQueue(getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        initRecyclerView();
         getLocation();
     }
 
@@ -81,8 +82,6 @@ public class HomeFragment extends Fragment {
         weatherIconIV = view.findViewById(R.id.imageViewWeatherIcon);
 
         recyclerView = view.findViewById(R.id.viewWeather);
-
-
     }
 
     private void setWeather() {
@@ -109,32 +108,24 @@ public class HomeFragment extends Fragment {
             weatherIconIV.setImageDrawable(getImage(getContext(), "icon_" + icon));
     }
 
+    private void initRecyclerView(Location location) {
+        String url = WeatherUtils.getForecastWeatherURL(location.getLatitude(), location.getLongitude());
+        GsonRequest<WeatherList> currentWeatherGsonRequest = new GsonRequest<>(url, WeatherList.class, null, response -> {
+            weatherList = response.weatherData; // Lấy danh sách từ WeatherList
 
-    private void initRecyclerView() {
-        ArrayList<Hourly> items = new ArrayList<>();
-        items.add(new Hourly("10 pm", 28, "cloudy"));
-        items.add(new Hourly("11 pm", 29, "sun"));
-        items.add(new Hourly("12 pm", 30, "wind"));
-        items.add(new Hourly("1 am", 29, "rainy"));
-        items.add(new Hourly("2 am", 27, "storm"));
-
-        adapterHourly = new RecyclerView.Adapter() {
-            @NonNull
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                return null;
+            if (weatherList != null) {
+                Log.d("Dữ liệu weatherList", Arrays.toString(weatherList));
+                // Create WeatherAdapter instance and set it to RecyclerView
+                weatherAdapter = new WeatherAdapter(getContext(), weatherList);
+                recyclerView.setAdapter(weatherAdapter);
+            } else {
+                Log.d("Dữ liệu weatherList", "weatherList is null");
             }
+        }, error -> {
+            Log.d("Volley error", String.valueOf(error));
+        });
 
-            @Override
-            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
-            }
-
-            @Override
-            public int getItemCount() {
-                return 0;
-            }
-        };
+        queue.add(currentWeatherGsonRequest);
     }
 
     private void getLocation() {
@@ -198,6 +189,8 @@ public class HomeFragment extends Fragment {
                 Log.d("Volley error", String.valueOf(error));
             });
             queue.add(currentWeatherGsonRequest);
+
+            initRecyclerView(lastLocation);
         }
     }
 

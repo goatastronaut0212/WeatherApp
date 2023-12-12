@@ -21,9 +21,11 @@ import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.example.weatherapp.Adapter.WeatherAdapter;
 import com.example.weatherapp.Domains.Hourly;
 import com.example.weatherapp.R;
 import com.example.weatherapp.models.CurrentWeather;
+import com.example.weatherapp.models.WeatherList;
 import com.example.weatherapp.utils.GsonRequest;
 import com.example.weatherapp.utils.RandomAPIKey;
 import com.example.weatherapp.utils.StringToNumberUtils;
@@ -38,6 +40,7 @@ import com.google.android.gms.location.SettingsClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ChooseLocationFragment extends Fragment {
 
@@ -57,7 +60,8 @@ public class ChooseLocationFragment extends Fragment {
     private LinearLayout rainLayout;
     private RecyclerView recyclerView;
 
-    private RecyclerView.Adapter adapterHourly;
+    CurrentWeather[] weatherList;
+    private WeatherAdapter weatherAdapter;
     private CurrentWeather currentWeather;
     private RequestQueue queue;
 
@@ -125,6 +129,27 @@ public class ChooseLocationFragment extends Fragment {
         queue.add(currentWeatherGsonRequest);
     }
 
+    private void initRecyclerView() {
+        String url = WeatherUtils.getForecastWeatherURL(latitude, longtitude);
+        Log.d("Lat & lon", "" + latitude + ", " + longtitude);
+        GsonRequest<WeatherList> currentWeatherGsonRequest = new GsonRequest<>(url, WeatherList.class, null, response -> {
+            weatherList = response.weatherData; // Lấy danh sách từ WeatherList
+
+            if (weatherList != null) {
+                Log.d("Dữ liệu weatherList", Arrays.toString(weatherList));
+                // Create WeatherAdapter instance and set it to RecyclerView
+                weatherAdapter = new WeatherAdapter(getContext(), weatherList);
+                recyclerView.setAdapter(weatherAdapter);
+            } else {
+                Log.d("Dữ liệu weatherList", "weatherList is null");
+            }
+        }, error -> {
+            Log.d("Volley error", String.valueOf(error));
+        });
+
+        queue.add(currentWeatherGsonRequest);
+    }
+
     public static Drawable getImage(Context c, String ImageName) {
         return c.getResources().getDrawable(c.getResources().getIdentifier(ImageName, "drawable", c.getPackageName()));
     }
@@ -158,7 +183,8 @@ public class ChooseLocationFragment extends Fragment {
         queue = Volley.newRequestQueue(requireContext());
 
         addControls(view);
-        textviewLocation.setText(location + ", " + latitude + ", " + longtitude);
+        textviewLocation.setText(location);
         receiveLocation();
+        initRecyclerView();
     }
 }
