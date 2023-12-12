@@ -184,6 +184,8 @@ public class ChooseLocationFragment extends Fragment {
 
         addControls(view);
         textviewLocation.setText(location);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
         receiveLocation();
         initRecyclerView();
     }
