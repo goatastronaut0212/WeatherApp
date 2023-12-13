@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,15 +24,26 @@ import com.android.volley.toolbox.Volley;
 import com.example.weatherapp.Adapter.WeatherAdapter;
 import com.example.weatherapp.R;
 import com.example.weatherapp.models.CurrentWeather;
+import com.example.weatherapp.models.MyXAxisValueFormatter;
 import com.example.weatherapp.models.WeatherList;
 import com.example.weatherapp.utils.GsonRequest;
 import com.example.weatherapp.utils.WeatherUtils;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -54,6 +66,7 @@ public class HomeFragment extends Fragment {
     private CurrentWeather currentWeather;
 
     RequestQueue queue;
+    LineChart lineChart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,6 +98,8 @@ public class HomeFragment extends Fragment {
         weatherIconIV = view.findViewById(R.id.imageViewWeatherIcon);
 
         recyclerView = view.findViewById(R.id.viewWeather);
+
+        lineChart = view.findViewById(R.id.linechart);
     }
 
     private void setWeather() {
@@ -126,6 +141,7 @@ public class HomeFragment extends Fragment {
                 // Create WeatherAdapter instance and set it to RecyclerView
                 weatherAdapter = new WeatherAdapter(getContext(), weatherList);
                 recyclerView.setAdapter(weatherAdapter);
+                initLineChart();
             } else {
                 Log.d("Dữ liệu weatherList", "weatherList is null");
             }
@@ -210,5 +226,60 @@ public class HomeFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
+    }
+
+    private void initLineChart() {
+        // Tạo dữ liệu giả lập
+        ArrayList<Entry> entries = new ArrayList<>();
+        ArrayList<Float> humidities = new ArrayList<>(); // Danh sách chỉ chứa giá trị humidity
+
+//        for (CurrentWeather current : weatherList) {
+//            humidities.add((float) current.main.humidity);
+//        }
+//
+//        // Thêm giá trị humidity vào danh sách Entry với trục x là vị trí của giá trị humidity
+//        for (int i = 0; i < humidities.size(); i++) {
+//            entries.add(new Entry(, humidities.get(i)));
+//        }
+        int index = 1;
+        for (CurrentWeather current : weatherList) {
+            index += 1;
+            entries.add(new Entry(current.dateTime, current.main.humidity));
+        }
+
+        // Tạo DataSet và cấu hình
+        LineDataSet dataSet = new LineDataSet(entries, "Humidities");
+        dataSet.setColor(getResources().getColor(R.color.colorPrimary));
+        dataSet.setValueTextColor(getResources().getColor(R.color.white));
+        dataSet.setDrawValues(true); // Bật hiển thị giá trị
+
+        // Tạo LineData và thiết lập DataSet
+        LineData lineData = new LineData(dataSet);
+
+        // Thiết lập LineChart
+        lineChart.setData(lineData);
+        lineChart.getDescription().setText("Linegraph humidity");
+        lineChart.getDescription().setTextColor(getResources().getColor(R.color.white));
+
+        // Cấu hình màu chữ cho chú thích (Legend)
+        Legend legend = lineChart.getLegend();
+        legend.setTextColor(getResources().getColor(R.color.white));
+
+        // Cấu hình màu chữ cho giá trị trục x (cột mốc)
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setTextColor(getResources().getColor(R.color.white));
+
+        // Cấu hình định dạng giá trị trục x
+        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+
+        // Cấu hình màu chữ cho giá trị trục y (trục trái)
+        YAxis yAxisLeft = lineChart.getAxisLeft();
+        yAxisLeft.setTextColor(getResources().getColor(R.color.white));
+
+        // Cấu hình màu chữ cho giá trị trục y (trục phải)
+        YAxis yAxisRight = lineChart.getAxisRight();
+        yAxisRight.setTextColor(getResources().getColor(R.color.white));
+
+        lineChart.invalidate(); // refresh
     }
 }

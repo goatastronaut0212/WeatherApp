@@ -28,7 +28,6 @@ import java.util.ArrayList;
 
 public class ManageLocationFragment extends Fragment {
     private ArrayList<State> states;
-    private SearchView searchView;
     private ListView listView;
     private FloatingActionButton addLocationFab;
 
@@ -42,20 +41,8 @@ public class ManageLocationFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        searchView = view.findViewById(R.id.searchviewLocation);
         listView = view.findViewById(R.id.listviewLocation);
         addLocationFab = view.findViewById(R.id.floatingActionButtonAddLocation);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -11,4 +11,5 @@
     <color name="dark_blue_700">#1a2332</color>
     <color name="yellow">#fdd020</color>
     <color name="dark_blue_300">#1a2332</color>
+    <color name="colorPrimary">#3F51B5</color>
 </resources>

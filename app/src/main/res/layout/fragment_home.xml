@@ -214,6 +214,11 @@
                     android:clipToPadding="false"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/linechart"
+                android:layout_height="300dp"
+                android:layout_width="match_parent" />
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
