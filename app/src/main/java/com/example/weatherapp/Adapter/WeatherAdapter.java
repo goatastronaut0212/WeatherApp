@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.weatherapp.R; // Replace with your actual package name
 import com.example.weatherapp.models.CurrentWeather;
-import com.example.weatherapp.models.WeatherList;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -85,7 +84,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         Date date = new Date(unixTime * 1000L); // Unix time được tính bằng giây, cần nhân 1000 để chuyển thành mili giây
 
         // Sử dụng SimpleDateFormat để định dạng thời gian
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("E HH:mm", Locale.getDefault());
 
         // Trả về thời gian đã định dạng
         return sdf.format(date);
