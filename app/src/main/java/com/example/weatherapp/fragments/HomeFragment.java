@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
     private CurrentWeather currentWeather;
 
     RequestQueue queue;
-    LineChart lineChart;
+    LineChart lineChartHumidity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -99,7 +99,7 @@ public class HomeFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.viewWeather);
 
-        lineChart = view.findViewById(R.id.linechart);
+        lineChartHumidity = view.findViewById(R.id.linechartHumidity);
     }
 
     private void setWeather() {
@@ -231,16 +231,7 @@ public class HomeFragment extends Fragment {
     private void initLineChart() {
         // Tạo dữ liệu giả lập
         ArrayList<Entry> entries = new ArrayList<>();
-        ArrayList<Float> humidities = new ArrayList<>(); // Danh sách chỉ chứa giá trị humidity
 
-//        for (CurrentWeather current : weatherList) {
-//            humidities.add((float) current.main.humidity);
-//        }
-//
-//        // Thêm giá trị humidity vào danh sách Entry với trục x là vị trí của giá trị humidity
-//        for (int i = 0; i < humidities.size(); i++) {
-//            entries.add(new Entry(, humidities.get(i)));
-//        }
         int index = 1;
         for (CurrentWeather current : weatherList) {
             index += 1;
@@ -248,7 +239,7 @@ public class HomeFragment extends Fragment {
         }
 
         // Tạo DataSet và cấu hình
-        LineDataSet dataSet = new LineDataSet(entries, "Humidities");
+        LineDataSet dataSet = new LineDataSet(entries, "Humidities (%)");
         dataSet.setColor(getResources().getColor(R.color.colorPrimary));
         dataSet.setValueTextColor(getResources().getColor(R.color.white));
         dataSet.setDrawValues(true); // Bật hiển thị giá trị
@@ -257,29 +248,29 @@ public class HomeFragment extends Fragment {
         LineData lineData = new LineData(dataSet);
 
         // Thiết lập LineChart
-        lineChart.setData(lineData);
-        lineChart.getDescription().setText("Linegraph humidity");
-        lineChart.getDescription().setTextColor(getResources().getColor(R.color.white));
+        lineChartHumidity.setData(lineData);
+        lineChartHumidity.getDescription().setText("Linegraph humidity");
+        lineChartHumidity.getDescription().setTextColor(getResources().getColor(R.color.white));
 
         // Cấu hình màu chữ cho chú thích (Legend)
-        Legend legend = lineChart.getLegend();
+        Legend legend = lineChartHumidity.getLegend();
         legend.setTextColor(getResources().getColor(R.color.white));
 
         // Cấu hình màu chữ cho giá trị trục x (cột mốc)
-        XAxis xAxis = lineChart.getXAxis();
+        XAxis xAxis = lineChartHumidity.getXAxis();
         xAxis.setTextColor(getResources().getColor(R.color.white));
 
         // Cấu hình định dạng giá trị trục x
         xAxis.setValueFormatter(new MyXAxisValueFormatter());
 
         // Cấu hình màu chữ cho giá trị trục y (trục trái)
-        YAxis yAxisLeft = lineChart.getAxisLeft();
+        YAxis yAxisLeft = lineChartHumidity.getAxisLeft();
         yAxisLeft.setTextColor(getResources().getColor(R.color.white));
 
         // Cấu hình màu chữ cho giá trị trục y (trục phải)
-        YAxis yAxisRight = lineChart.getAxisRight();
+        YAxis yAxisRight = lineChartHumidity.getAxisRight();
         yAxisRight.setTextColor(getResources().getColor(R.color.white));
 
-        lineChart.invalidate(); // refresh
+        lineChartHumidity.invalidate(); // refresh
     }
 }
