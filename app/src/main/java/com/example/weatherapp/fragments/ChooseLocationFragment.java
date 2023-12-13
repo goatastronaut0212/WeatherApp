@@ -23,13 +23,22 @@ import com.android.volley.toolbox.Volley;
 import com.example.weatherapp.Adapter.WeatherAdapter;
 import com.example.weatherapp.R;
 import com.example.weatherapp.models.CurrentWeather;
+import com.example.weatherapp.models.MyXAxisValueFormatter;
 import com.example.weatherapp.models.WeatherList;
 import com.example.weatherapp.utils.GsonRequest;
 import com.example.weatherapp.utils.StringToNumberUtils;
 import com.example.weatherapp.utils.WeatherUtils;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ChooseLocationFragment extends Fragment {
@@ -54,6 +63,7 @@ public class ChooseLocationFragment extends Fragment {
     private WeatherAdapter weatherAdapter;
     private CurrentWeather currentWeather;
     private RequestQueue queue;
+    private LineChart lineChartHumidity;
 
     public ChooseLocationFragment() {
         // Required empty public constructor
@@ -82,6 +92,8 @@ public class ChooseLocationFragment extends Fragment {
         weatherIconIV = view.findViewById(R.id.imageViewWeatherIcon);
 
         recyclerView = view.findViewById(R.id.viewWeather);
+
+        lineChartHumidity = view.findViewById(R.id.linechartHumidity);
     }
 
     private void setWeather() {
@@ -130,6 +142,7 @@ public class ChooseLocationFragment extends Fragment {
                 // Create WeatherAdapter instance and set it to RecyclerView
                 weatherAdapter = new WeatherAdapter(getContext(), weatherList);
                 recyclerView.setAdapter(weatherAdapter);
+                initLineChartHumidity();
             } else {
                 Log.d("Dữ liệu weatherList", "weatherList is null");
             }
@@ -178,5 +191,52 @@ public class ChooseLocationFragment extends Fragment {
 
         receiveLocation();
         initRecyclerView();
+    }
+
+    private void initLineChartHumidity() {
+        // Tạo dữ liệu giả lập
+        ArrayList<Entry> entries = new ArrayList<>();
+        ArrayList<Float> humidities = new ArrayList<>(); // Danh sách chỉ chứa giá trị humidity
+
+        int index = 1;
+        for (CurrentWeather current : weatherList) {
+            index += 1;
+            entries.add(new Entry(current.dateTime, current.main.humidity));
+        }
+
+        // Tạo DataSet và cấu hình
+        LineDataSet dataSet = new LineDataSet(entries, "Humidities (%)");
+        dataSet.setColor(getResources().getColor(R.color.colorPrimary));
+        dataSet.setValueTextColor(getResources().getColor(R.color.white));
+        dataSet.setDrawValues(true); // Bật hiển thị giá trị
+
+        // Tạo LineData và thiết lập DataSet
+        LineData lineData = new LineData(dataSet);
+
+        // Thiết lập LineChart
+        lineChartHumidity.setData(lineData);
+        lineChartHumidity.getDescription().setText("Linegraph humidity");
+        lineChartHumidity.getDescription().setTextColor(getResources().getColor(R.color.white));
+
+        // Cấu hình màu chữ cho chú thích (Legend)
+        Legend legend = lineChartHumidity.getLegend();
+        legend.setTextColor(getResources().getColor(R.color.white));
+
+        // Cấu hình màu chữ cho giá trị trục x (cột mốc)
+        XAxis xAxis = lineChartHumidity.getXAxis();
+        xAxis.setTextColor(getResources().getColor(R.color.white));
+
+        // Cấu hình định dạng giá trị trục x
+        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+
+        // Cấu hình màu chữ cho giá trị trục y (trục trái)
+        YAxis yAxisLeft = lineChartHumidity.getAxisLeft();
+        yAxisLeft.setTextColor(getResources().getColor(R.color.white));
+
+        // Cấu hình màu chữ cho giá trị trục y (trục phải)
+        YAxis yAxisRight = lineChartHumidity.getAxisRight();
+        yAxisRight.setTextColor(getResources().getColor(R.color.white));
+
+        lineChartHumidity.invalidate(); // refresh
     }
 }
