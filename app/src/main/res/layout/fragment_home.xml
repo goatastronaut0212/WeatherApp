@@ -200,7 +200,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Next 7 day"
+                        android:text="Next 5 day"
                         android:textColor="@color/white"
                         android:textStyle="bold"/>
             </LinearLayout>
