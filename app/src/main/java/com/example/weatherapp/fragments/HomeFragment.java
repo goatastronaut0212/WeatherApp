@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -31,11 +30,13 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment {
-    TextView temperatureTV, highLowTV, humidTV, rainTV, windTV, weatherDescTV;
+    TextView temperatureTV, highLowTV, humidTV, rainTV, windTV, weatherDescTV, locationTV, dateTV;
     ImageView weatherIconIV;
     LinearLayout rainLayout;
     RecyclerView recyclerView;
@@ -78,6 +79,8 @@ public class HomeFragment extends Fragment {
         rainLayout = view.findViewById(R.id.layoutRain);
         windTV = view.findViewById(R.id.textViewWind);
         weatherDescTV = view.findViewById(R.id.textViewWeatherDesc);
+        locationTV = view.findViewById(R.id.textViewLocation);
+        dateTV = view.findViewById(R.id.textViewDate);
 
         weatherIconIV = view.findViewById(R.id.imageViewWeatherIcon);
 
@@ -90,6 +93,11 @@ public class HomeFragment extends Fragment {
         humidTV.setText(String.format("%d%%", currentWeather.main.humidity));
         windTV.setText(String.format("%skm/h", Math.round(currentWeather.wind.windSpeed)));
         weatherDescTV.setText(currentWeather.weathers[0].main);
+        locationTV.setText(currentWeather.cityName);
+
+        Date date = new Date(currentWeather.dateTime * 1000L);
+        SimpleDateFormat sdf = new SimpleDateFormat("E MMMM dd", Locale.getDefault());
+        dateTV.setText(sdf.format(date));
 
         if (currentWeather.rain != null) {
             rainLayout.setVisibility(View.VISIBLE);
